@@ -1,0 +1,60 @@
+#include<stdio.h>
+#include<math.h>
+#pragma warning(disable:4996)
+#define N 10
+void sort(int x[], int n)
+{
+    int i, j;
+    int p;
+    for (i = 0; i <= n; i++)
+    {
+        for (j = 0; j <= n; j++)
+        {
+            if (x[i] > x[j])
+            {
+                p = x[i];
+                x[i] = x[j];
+                x[j] = p;
+            }
+        }
+    }
+}
+//提取出所给数的每一位数，储存在数组里，并排序
+void everynumber(int a[], int i)
+{
+    int count = 0;
+    while (i != 0)
+    {
+        a[count] = i % 10;
+        i /= 10;
+        count++;
+    }
+    sort(a, count-1);/*排序的目的是为了便于比较*/
+    return;
+}
+int main()
+{
+    int i, j,n,flag=0,total=0;
+    int a[N] = { 0 }, b[N] = { 0 };
+    scanf("%d", &n);
+    for (i = 0; i < n; i++)
+    {
+        b[i] = n-i;
+    }
+    for (i = 1; i < pow(10, n); i++)/*穷举上限是10^n*/
+    {
+        flag = 0;/*一定要记住重置标志值！！*/
+        everynumber(a, i);/*提取出每一个数的每一位*/
+        for (j = 0; j < n; j++)
+        {
+            if (b[j] != a[j])
+                flag = 1;
+        }
+        if (flag == 0)
+        {
+            printf("%d\n", i);
+            total++;
+        }
+    }
+    printf("%d\n", total);
+}
