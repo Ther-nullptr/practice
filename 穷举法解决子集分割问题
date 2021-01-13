@@ -1,0 +1,61 @@
+#include<stdio.h>
+#include<math.h>
+#pragma warning(disable:4996)
+#pragma warning(disable:6054)
+#pragma warning(disable:6031)
+#define N 100
+main()
+{
+	int count, i, j,k, n,l,flag=0, s1 = 0,s2=0;
+	int a[N] = { 0 }, b[N] = { 0 };
+	scanf("%d", &n);
+	for (count = 0; count < n; count++)
+	{
+		scanf("%d", &a[count]);
+	}
+	for (count = 0; count < n; count++)
+	{
+		s1 += a[count];/*求数组之和*/
+	}
+	if (s1 % 2 == 1)/*若和为计数，直接跳出*/
+		printf("False\n");
+	else
+	{
+		for (i = 1; i < pow(2, n); i++)/*数组中有n个数，则有2^n-1种情况*/
+		{
+			s2 = 0;
+			l = i;
+			for (k = 0; k < n; k++)/*把i转化为二进制数，储存在数组中*/
+			{
+				b[k] = l % 2;
+				l /= 2;
+			}
+			for (j = 0; j < n; j++)
+			{
+				s2 += b[j] * a[j];/*计算某几个元素之和,由于是二进制数，所以可以遍历所有情况*/
+			}
+			if (s2 == s1 / 2)
+			{
+				printf("True\n");
+				for (j = 0; j < n; j++)/*分两类情况进行打印——取到的和没有取到的*/
+				{
+					if(b[j] != 0)
+					printf("%d ", a[j]);
+				}
+				printf("\n");
+				for (j = 0; j < n; j++)
+				{
+					if(b[j]==0)
+					printf("%d ", a[j]);
+				}
+				printf("\n");
+				flag = 1;
+				break;
+			}
+		}
+		if (flag == 0)
+		{
+			printf("False\n");
+		}
+	}
+}
