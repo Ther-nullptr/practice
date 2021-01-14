@@ -1,0 +1,91 @@
+import math
+#考虑每个小球有m个盒子可以选择放入，而一共又有n个小球，所以方案数为m^n
+def different_ball_different_box_empty(ball,box):
+    return(box**ball)
+
+#考虑插板法：将n个小球排成一排，将m−1块板子插在小球之间的空隙中，由于一共有n−1个缝隙，所以答案为Cm−1n−1。
+def same_ball_different_box_no_empty(ball,box):
+    return(math.factorial(ball-1)//(math.factorial(box-1)*math.factorial(ball-box)))
+
+#考虑插板后的结果，是m−1块板子和n个小球一共n+m−1个物体排成一排，考虑这些物体中有m−1个板子即是一种方案，所以答案为Cm−1n+m−1。
+def same_ball_different_box_empty(ball,box):
+    return(math.factorial(ball+box-1)//(math.factorial(box-1)*math.factorial(ball)))
+
+#考虑递推，设F[n][m]表示将n个小球放入m个盒子中的方案数。由于小球互不相同，考虑第i个小球的方法，可以是放到前i−1个小球已经放过的盒子中，也可以放到一个新盒子中。
+#假设前i−1个小球已经占用了j个盒子，由于小球互不相同，故放了小球的盒子也应该被视为互不相同的，所以将第i个小球放入这些盒子共有j种不同方案。如果将第i个小球放入一个新盒子，由于盒子都是相同的，所以只有一种方案。
+#综上所述，最后的递推式为F[i][j]=j⋅F[i−1][j]+F[i−1][j−1]。
+def different_ball_same_box_no_empty(ball,box):
+    if(box==1):
+        return(1)#所有球只能放在一个盒子里
+    elif(ball==box):
+        return(1)#注意到盒子不能为空，所以只能一个盒子放一个球
+    else:
+        return(different_ball_same_box_no_empty(ball-1,box-1)+box*different_ball_same_box_no_empty(ball-1,box))
+
+#我们只需要在前一种情况的基础上，对盒子做一个全排列即可
+def different_ball_different_box_no_empty(ball,box):
+    return(math.factorial(box)*different_ball_same_box_no_empty(ball,box))
+
+#我们只需要在different_ball_same_box_no_empty的基础上，枚举一下使用了多少个盒子即可
+def different_ball_same_box_empty(ball,box):
+    s=0
+    for m in range(1,box+1):
+        s+=different_ball_same_box_no_empty(ball,m)
+    return s
+
+#由于这种情况下小球都是相同的，所以我们不能再用放“第几个”小球这样的顺序和思路来考虑问题了。换一个思路，假设初始时我们既没有盒子也没有小球，考虑用如下两个操作来构造出所有方案：增加一个全新的盒子，或给所有已有的盒子中各放入一个小球。
+#容易知道，任意一种合法的方案都可以通过上述两种操作构造出来，且构造方式是唯一的。设G[n][m]表示将n个小球放入m个盒子中的方案数，由两种操作的描述即可得递推式G[i][j]=G[i][j−1]+G[i−j][j]。
+def same_ball_same_box_empty(ball,box):
+    if(ball==0 or box==1):
+        return(1)
+    elif(ball<box):
+        return(same_ball_same_box_empty(ball,ball))
+    else:
+        return(same_ball_same_box_empty(ball,box-1)+same_ball_same_box_empty(ball-box,box))
+    
+#参考上一种情况，只需事先给每个盒子放入一个球即可，总方案数为G[n−m][m]。
+def same_ball_same_box_no_empty(ball,box):
+    return same_ball_same_box_empty(ball-box,box)
+
+def main():
+    print('请选择模式：')
+    print('输入小球状态——“相同：1”\“不相同：0”')
+    str1=input()
+    if(str1=='1'):
+        a=True
+    elif(str1=='0'):
+        a=False
+    print('输入盒子状态——“相同：1”\“不相同：0”')
+    str2=input()
+    if(str2=='1'):
+        b=True
+    elif(str2=='0'):
+        b=False
+    print('输入盒子状态——“允许为空：1”\“不允许为空：0”')
+    str3=input()
+    if(str3=='1'):
+        c=True
+    elif(str3=='0'):
+        c=False
+    ball=int(input('请输入小球的个数：'))
+    box=int(input('请输入盒子的个数：'))
+    print('方案数：')
+    if((not a) and (not b) and c ):
+        print('%d'%different_ball_different_box_empty(ball,box))
+    elif(a and (not b) and (not c)):
+        print('%d'%same_ball_different_box_no_empty(ball,box))
+    elif(a and (not b) and c):
+        print('%d'%same_ball_different_box_empty(ball,box))
+    elif((not a) and b and (not c)):
+        print('%d'%different_ball_same_box_no_empty(ball,box))
+    elif((not a) and (not b) and (not c)):
+        print('%d'%different_ball_different_box_no_empty(ball,box))
+    elif((not a) and b and c):
+        print('%d'%different_ball_same_box_empty(ball,box))
+    elif(a and b and c):
+        print('%d'%same_ball_same_box_empty(ball,box))
+    else:
+        print('%d'%same_ball_same_box_no_empty(ball,box))
+
+if __name__ =='__main__':
+    main()
