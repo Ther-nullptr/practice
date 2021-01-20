@@ -1,0 +1,44 @@
+%函数多功能计算器，包含求导、积分、泰勒展开、求反函数、求极限、求零点等操作。
+syms x
+while 1
+    s=input('input your functions:\n','s');
+    f=str2sym(s);
+    disp('the function is:');
+    disp(f);
+    flag=input('choose the mode---0:derivative,1:integral,2:taylor,3:inverse fuction,4:limit,5:roots\n');
+    if flag==0
+        n1=input('input the order of derivative:\n');
+        disp('the derivative of the function:');
+        disp(diff(f,x,n1));
+    elseif flag==1
+        bool=input('choose the mode:0--indefinite integral,1--definite integral:\n');
+        if bool
+            a=input('input the lower limit:\n');
+            b=input('input the upper limit:\n');
+            disp(int(f,x,a,b));
+        else
+        n2=input('input the order of intergral:\n');
+        disp('the intergral of the function:');
+        disp(int(f,x,n2));
+        end
+    elseif flag==2
+        n3=input('input x:\n');
+        disp('the taylor expansion of the function:');
+        disp(taylor(f,x,n3));
+    elseif flag==3
+        disp(finverse(f));
+    elseif flag==4
+        n4=input('input x:');
+        bool=input('choose the mode:left--0,right--1\n');
+        if bool
+            s0='right';
+        else
+            s0='left'; 
+        end
+        disp('the limit is:');
+        disp(limit(f,x,n4,s0));
+    elseif flag==5
+        disp('the roots are:');
+        disp(solve(f,x));
+    end
+end
